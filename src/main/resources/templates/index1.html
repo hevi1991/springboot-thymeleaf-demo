@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<div class="container">
+    <h1>THYMELEAF DEMO</h1>
+    <h2>1.标准表达式语法</h2>
+    <p>后端核心代码在package com.examplethymeleaf.demo.controller.WelcomeController</p>
+    <h3>1.1简单表达式</h3>
+    <table>
+        <thead>
+        <tr>
+            <th style="text-align:center">语法</th>
+            <th>名称</th>
+            <th>描述</th>
+            <th>作用</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td style="text-align:center">${…}</td>
+            <td>Variable Expressions</td>
+            <td>变量表达式</td>
+            <td>取出上下文变量的值</td>
+        </tr>
+        <tr>
+            <td style="text-align:center">*{…}</td>
+            <td>Selection Variable Expressions</td>
+            <td>选择变量表达式</td>
+            <td>取出选择的对象的属性值</td>
+        </tr>
+        <tr>
+            <td style="text-align:center">#{…}</td>
+            <td>Message Expressions</td>
+            <td>消息表达式</td>
+            <td>使文字消息国际化，I18N</td>
+        </tr>
+        <tr>
+            <td style="text-align:center">@{…}</td>
+            <td>Link URL Expressions</td>
+            <td>链接表达式</td>
+            <td>用于表示各种超链接地址</td>
+        </tr>
+        <tr>
+            <td style="text-align:center">~{…}</td>
+            <td>Fragment Expressions</td>
+            <td>片段表达式</td>
+            <td>引用一段公共的代码片段</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="section">
+        <h4>1.1.1 通过变量表达式${}取出上下文环境中的message变量</h4>
+        <p th:text="${message}"> a message</p>
+    </div>
+    <div class="section">
+        <h4>1.1.2 变量表达式${}是面向整个上下文的，而选择变量表达式*{}的上下文是父标签（th:object）所选择的对象</h4>
+        <ul th:object="${user}">
+            <li th:text="*{name}">P</li>
+            <li th:text="*{age}">1</li>
+        </ul>
+    </div>
+    <div class="section">
+        <h4>1.1.3 消息表达式可用于国际化文字信息。</h4>
+        <p>暂时不使用。</p>
+    </div>
+    <div class="section">
+        <h4>1.1.4 链接表达式@{}是专门用来处理 URL 链接地址的。</h4>
+        <h5>1.1.4.1 绝对地址</h5>
+        <a th:text="@{https://www.baidu.com}" th:href="@{https://www.baidu.com}">url</a>
+        <h5>1.1.4.2 相对地址</h5>
+        <a th:text="@{css/main.css}" th:href="@{css/main.css}"></a>
+    </div>
+    <div class="section">
+        <h4>1.1.5 片段表达式~{}可以用来引用一段公共的 HTML 代码片段。</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>语法</th>
+                <th>描述</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>~{templatename}</td>
+                <td>引用整个模板文件的代码片段</td>
+            </tr>
+            <tr>
+                <td>~{templatename :: selector}</td>
+                <td>selector 可以是 th:fragment 指定的名称或其他选择器。<br>如类选择器、ID选择器等</td>
+            </tr>
+            <tr>
+                <td>~{::selector}</td>
+                <td>相当于 ~{this :: selector}，表示引用当前模板定义的代码片段</td>
+            </tr>
+            </tbody>
+        </table>
+        在 Thymeleaf 模板文件中，你可以使用th:fragment属性来定义一段公共的代码片段，然后你可以通过使用th:insert、th:replace、th:include（Thymeleaf 3.0
+        开始不再推荐使用，本文也将不再介绍它）属性来将这些公共的代码片段引入到模板文件中来。<br>
+        insert是直接将代码段插入，replace是整个替代代码块
+        <h5>1.1.5.1 ~{templatename}</h5>
+        <div th:insert="~{commons/copyright}"></div>
+        <h5>1.1.5.2 ~{templatename :: selector}</h5>
+        <div th:insert="~{commons/copyright :: copyright}"></div>
+        <h5>1.1.5.3 ~{::selector}</h5>
+        <div th:fragment="copyright">&copy; 2017 hewei_inside</div>
+        <div th:insert="~{::copyright}"></div>
+        <h5>1.1.5.4 ~{}是可以省略的</h5>
+        <div th:insert="commons/copyright"></div>
+        <h5>1.1.5.5 th:fragment可以声明一组参数</h5>
+        <div th:fragment="crumbs(parent, child)">
+            <i th:text="${parent}"></i> <i th:text="${child}"></i>
+        </div>
+        <div th:insert="~{::crumbs('用户中心', '我的订单')}"></div>
+    </div>
+    <div class="section">
+        <h4>1.1.6 内置对象</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>对象</th>
+                <th>描述</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/context/IContext.java"
+                       target="_blank" rel="external">#ctx</a></td>
+                <td>上下文对象</td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/context/IContext.java"
+                       target="_blank" rel="external">#vars</a></td>
+                <td>同 #ctx，表示上下文变量</td>
+            </tr>
+            <tr>
+                <td>#locale</td>
+                <td>上下文本地化（特定的地理区域）变量，可参考 java.util.Locale</td>
+            </tr>
+            <tr>
+                <td>#request</td>
+                <td>HttpServletRequest 对象，可参考 javax.servlet.http.HttpServletRequest</td>
+            </tr>
+            <tr>
+                <td>#response</td>
+                <td>HttpServletResponse 对象，可参考 javax.servlet.http.HttpServletResponse</td>
+            </tr>
+            <tr>
+                <td>#session</td>
+                <td>HttpSession 对象，可参考 javax.servlet.http.HttpSession</td>
+            </tr>
+            <tr>
+                <td>#servletContext</td>
+                <td>ServletContext 对象，可参考 javax.servlet.ServletContext</td>
+            </tr>
+            </tbody>
+        </table>
+        <h5>1.1.6.1 ctx示例</h5>
+        <p th:text="${#ctx.getLocale()}"></p>
+        <p th:text="${#ctx.getVariable('message')}"></p>
+        <h5>1.1.6.2 vars示例</h5>
+        <p th:text="${#vars.getLocale()}"></p>
+        <p th:text="${#vars.getVariable('message')}"></p>
+        <h5>1.1.6.3 locale示例</h5>
+        <p th:text="${#locale}"></p>
+        <p th:text="${#locale.country}"></p>
+        <p th:text="${#locale.displayCountry}"></p>
+        <p th:text="${#locale.language}"></p>
+        <p th:text="${#locale.displayLanguage}"></p>
+        <p th:text="${#locale.displayName}"></p>
+        <h5>1.1.6.4 request示例</h5>
+        <p th:text="${#request.protocol}"></p>
+        <p th:text="${#request.scheme}"></p>
+        <p th:text="${#request.serverName}"></p>
+        <p th:text="${#request.serverPort}"></p>
+        <p th:text="${#request.method}"></p>
+        <p th:text="${#request.requestURI}"></p>
+        <p th:text="${#request.requestURL}"></p>
+        <p th:text="${#request.servletPath}"></p>
+        <p th:text="${#request.parameterNames}"></p>
+        <p th:text="${#request.parameterMap}"></p>
+        <p th:text="${#request.queryString}"></p>
+        <h5>1.1.6.5 response示例</h5>
+        <p th:text="${#response.status}"></p>
+        <p th:text="${#response.bufferSize}"></p>
+        <p th:text="${#response.characterEncoding}"></p>
+        <p th:text="${#response.contentType}"></p>
+        <h5>1.1.6.6 session示例</h5>
+        <p th:text="${#session.id}"></p>
+        <p th:text="${#session.lastAccessedTime}"></p>
+    </div>
+    <div class="section">
+        <h4>1.1.7 工具类</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>对象</th>
+                <th>描述</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/expression/Messages.java"
+                       target="_blank" rel="external">#messages</a></td>
+                <td>消息工具类，与 ＃{…} 作用相同</td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/expression/Uris.java"
+                       target="_blank" rel="external">#uris</a></td>
+                <td>地址相关的工具类</td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/expression/Conversions.java"
+                       target="_blank" rel="external">#conversions</a></td>
+                <td>对象转换工具类</td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/expression/Dates.java"
+                       target="_blank" rel="external">#dates</a></td>
+                <td>日期时间工具类</td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/expression/Calendars.java"
+                       target="_blank" rel="external">#calendars</a></td>
+                <td>日历工具类</td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/expression/Numbers.java"
+                       target="_blank" rel="external">#numbers</a></td>
+                <td>数字工具类</td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/expression/Strings.java"
+                       target="_blank" rel="external">#strings</a></td>
+                <td>字符串工具类</td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/expression/Objects.java"
+                       target="_blank" rel="external">#objects</a></td>
+                <td>对象工具类</td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/expression/Bools.java"
+                       target="_blank" rel="external">#bools</a></td>
+                <td>布尔工具类</td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/expression/Arrays.java"
+                       target="_blank" rel="external">#arrays</a></td>
+                <td>数组工具类</td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/expression/Lists.java"
+                       target="_blank" rel="external">#lists</a></td>
+                <td>List 工具类</td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/expression/Sets.java"
+                       target="_blank" rel="external">#sets</a></td>
+                <td>Set 工具类</td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.0.5.RELEASE/src/main/java/org/thymeleaf/expression/Maps.java"
+                       target="_blank" rel="external">#maps</a></td>
+                <td>Map 工具类</td>
+            </tr>
+            </tbody>
+        </table>
+        <h5>示例</h5>
+        <p th:text="${#strings.isEmpty(message)}"></p>
+        <p th:text="${#dates.format(now, 'yyyy-MM-dd HH:mm:ss')}"></p>
+    </div>
+    <hr>
+    <h3>1.2字面值</h3>
+    <p>所谓字面值，首先它不是一个变量，它是一个具体的确切的值，通常这些值是比较简单的，例如：18、'welcome'等，它们没有名称，以至于我们只能用值来称呼它们，因此我们称其为字面值。</p>
+    <div class="section">
+        <h4>1.2.1 文字字面值</h4>
+        <p>文字字面值是用单引号引起来的任何字符内容，如果字符内容里面含有单引号，则需要进行转义。</p>
+        <!-- Welcome to BeiJing! -->
+        <p th:text="'Welcome to BeiJing!'"></p>
+        <!-- 'Welcome to BeiJing!' -->
+        <p th:text="'\'Welcome to BeiJing!\''"></p>
+        <h4>1.2.2 数字字面值</h4>
+        <!-- 2017 -->
+        <p th:text="2017"></p>
+        <!-- 2018 -->
+        <p th:text="2017 + 1"></p>
+        <h4>1.2.3 布尔字面值</h4>
+        <!-- false -->
+        <p th:text="1 > 2"></p>
+        <!-- 否 -->
+        <p th:text="1 > 2 ? '是' : '否'"></p>
+        <h4>1.2.4 空字面量</h4>
+        <p th:text="${sexual}"></p>
+    </div>
+    <hr>
+    <h3>1.3 文本操作</h3>
+    <p>我们可以对文本内容进行两种常用的操作，它们分别为字符串连接和字符串替换。</p>
+    <div class="section">
+        <h4>1.3.1 字符串操作</h4>
+        <h5>1.3.1.1 字符串拼接</h5>
+        <p>不管是字面值还是表达式的结果，我们都可以使用+符号将它们连接起来</p>
+        <!-- Welcome to BeiJing! -->
+        <p th:text="'Welcome to ' + ${#locale.displayCountry} + '!'"></p>
+        <h5>1.3.1.2 字面值替换</h5>
+        <p>符号||可以用来将字面值和表达式包裹起来，这样就能方便的替换变量的值，而不需要使用+连接符</p>
+        <p th:text="|Welcome to ${#locale.displayCountry}|"></p>
+    </div>
+    <hr>
+    <h3>1.4 算术运算</h3>
+    <p>支持+（加）、-（减）、*（乘）、/（除）、%（模）运算</p>
+    <!-- 6 -->
+    <p th:text="4 + 2"></p>
+    <!-- 2 -->
+    <p th:text="4 - 2"></p>
+    <!-- 8 -->
+    <p th:text="4 * 2"></p>
+    <!-- 2 -->
+    <p th:text="4 / 2"></p>
+    <!-- 0 -->
+    <p th:text="4 % 2"></p>
+    <!-- 2 -->
+    <p th:text="${pagination.page + 1}"></p>
+    <!-- 2 -->
+    <p th:text="${pagination.page} + 1"></p>
+    <hr>
+    <h3>1.5 布尔运算</h3>
+    <p>支持and（且）、or（或）、!（非）、not（非）运算</p>
+    <p th:text="${true and false}"></p>
+    <p th:text="${true or false}"></p>
+    <p th:text="${!true}"></p>
+    <p th:text="${not false}"></p>
+    <hr>
+    <h3>1.6 比较和相等</h3>
+    <p>支持<（lt）、>（gt）、<=（le）、>=（ge）、==（eq）、！=（ne）</p>
+    <p th:text="${user.age < 60}"></p>
+    <p th:text="${user.age <= 60}"></p>
+    <p th:text="${user.age > 18}"></p>
+    <p th:text="${user.age >= 18}"></p>
+    <p th:text="${user.age == 18}"></p>
+    <p th:text="${user.age != 18}"></p>
+    <hr>
+    <h3>1.7 条件运算</h3>
+    <h4>1.7.1 三元运算符：(if) ? (then) : (else)</h4>
+    <p th:text="${true ? '真' : '假'}"></p>
+    <hr>
+    <h2>2 使用文本</h2>
+    <p>首先介绍两个最基础的th:*属th:text和th:utext，它们都是用于处理文本消息内容。</p>
+    <div class="section">
+        <h3>2.1 th:text</h3>
+        <p>当它作为静态文件直接运行时，浏览器会自动忽略它不能识别的th:text属性，而显示
+        <p>标签体的文本内容Welcome to BeiJing!
+            <br>
+            当它作为模板文件运行在服务器端时，th:text属性的具体值将会替换标签体的文本内容。</p>
+        <p th:text="${message}">Welcome to BeiJing!</p>
+        <h3>2.2 th:utext</h3>
+        <p>属性th:utext与th:text的区别在于</p>
+        <ul>
+            <li>th:text默认会对含有 HTML 标签的内容进行字符转义；</li>
+            <li>th:utext（Unescaped Text）则不会对含有 HTML 标签的内容进行字符转义；</li>
+        </ul>
+        <p th:text="${umessage}"></p>
+        <p th:utext="${umessage}"></p>
+    </div>
+    <hr>
+    <h2>3 设置属性值</h2>
+    <p>在 Thymeleaf 模板文件中，你可以使用th:*（或者使用th:attr属性）来设置任意的 HTML5 标签属性的值。</p>
+    <div class="section">
+        <h3>3.1 th:attr</h3>
+        <p>这种方式是不被推荐的，了解一下就行。下面是用th:attr="href=..."来设置标签href属性的值</p>
+        <a th:attr="href=@{https://www.google.com}" target="_blank">谷歌一下你就知道</a>
+        <h3>3.2 th:*</h3>
+        <p>显然th:attr="href=@{http://www.baidu.com}"不够简洁，我们更推荐下面的这种语法</p>
+        <a th:href="@{https://www.google.com}" target="_blank">谷歌一下你就知道</a>
+        <h3>3.3 th:*-*</h3>
+        <p>如果想要同时为标签的多个不同属性设置相同的一个值，可以使用th:*-*的语法</p>
+        <img src="images/logo.png" th:alt-title="LOGO图片">
+        <h3>3.4 th:attrappend & th:attrprepend</h3>
+        <p>th:attrappend和th:attrprepend可以将表达式的结果分别追加到指定的属性值之后和之前。</p>
+        <p class="grey-bg" th:attrappend="class=' red'">Lorem ipsum dolor sit amet.</p>
+        <p class="grey-bg" th:classappend="' blue'">Lorem ipsum dolor.</p>
+        <h3>3.5 布尔属性</h3>
+        <p>Thymeleaf 也允许我们通过th:*（这里的*表示任意的布尔属性） 来选择是否使用这些布尔属性。</p>
+        <input type="checkbox" name="rememberme" th:checked="${true}"/> 记住我 <br>
+        <select>
+            <option>北京</option>
+            <option th:selected="${true}">上海</option>
+            <option>广州</option>
+            <option>深圳</option>
+        </select>
+    </div>
+    <hr>
+    <h2>4 遍历</h2>
+    <p>遍历（迭代）的语法th:each="自定义的元素变量名称 : ${集合变量名称}"</p>
+    <div>
+        <spn>你所在城市：</spn>
+        <select name="mycity">
+            <option th:each="city : ${cities}" th:text="${city.name}"></option>
+        </select>
+    </div>
+    <p>属性th:each提供了一个用于跟踪迭代的状态变量，它包含以下几个属性：</p>
+    <table>
+        <thead>
+        <tr>
+            <th>属性</th>
+            <th>类型</th>
+            <th>描述</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>index</td>
+            <td>int</td>
+            <td>当前迭代的索引，从 0 开始</td>
+        </tr>
+        <tr>
+            <td>count</td>
+            <td>int</td>
+            <td>当前迭代的计数，从 1 开始</td>
+        </tr>
+        <tr>
+            <td>size</td>
+            <td>int</td>
+            <td>集合中元素的总个数</td>
+        </tr>
+        <tr>
+            <td>current</td>
+            <td>int</td>
+            <td>当前的元素对象</td>
+        </tr>
+        <tr>
+            <td>even</td>
+            <td>boolean</td>
+            <td>当前迭代的计数是否是偶数</td>
+        </tr>
+        <tr>
+            <td>odd</td>
+            <td>boolean</td>
+            <td>当前迭代的计数是否是奇数</td>
+        </tr>
+        <tr>
+            <td>first</td>
+            <td>boolean</td>
+            <td>当前元素是否是集合的第一个元素</td>
+        </tr>
+        <tr>
+            <td>last</td>
+            <td>boolean</td>
+            <td>当前元素是否是集合的最后一个元素</td>
+        </tr>
+        </tbody>
+    </table>
+    <p>不管什么时候，Thymeleaf 始终会为每个th:each创建一个状态变量，默认的状态变量名称就是自定义的元素变量名称后面加Stat字符串组成：</p>
+    <div>
+        <spn>所在城市：</spn>
+        <select name="mycity">
+            <option th:each="city : ${cities}" th:text="${cityStat.index + city.name}"
+                    th:item-index="${cityStat.count}"></option>
+        </select>
+    </div>
+    <hr>
+    <h2>5 条件判断</h2>
+    <p>条件判断语句有三种，分别是：th:if、th:unless、th:swith。</p>
+    <div class="section">
+        <h3>5.1 th:if</h3>
+        <p>当表达式的评估结果为真时则显示内容，否则不显示</p>
+        <p th:if="${true}">Hello, I'm true.</p>
+        <p th:if="${false}">Hello, I'm false.</p>
+        <h3>5.2 th:unless</h3>
+        <p>th:unless与th:if判断恰好相反，当表达式的评估结果为假时则显示内容，否则不显示</p>
+        <p th:unless="${true}">Hello, I'm true.</p>
+        <p th:unless="${false}">Hello, I'm false.</p>
+        <h3>5.3 th:switch</h3>
+        <p>多路选择语句，它需要搭配th:case来使用</p>
+        <div th:switch="${'admin'}">
+            <p th:case="admin">管理员</p>
+            <p th:case="user">普通用户</p>
+        </div>
+    </div>
+    <hr>
+    <h2>6 定义局部变量</h2>
+    <p>使用th:with属性可以定义局部变量</p>
+    <p th:with="name='Fiona',age=19">
+        <span th:text="${name}"></span><br>
+        <span th:text="${age}"></span>
+    </p>
+    <hr>
+    <h2>7 内联表达式</h2>
+    <p>内联表达式允许我们直接在 HTML 文本中使用标准表达式，而不需要使用th:*标签属性。</p>
+    <div class="section">
+        <h3 th:text="'7.1 [[...]]'"></h3>
+        <p th:text="'[[...]]相当于th:text，对含有 HTML 标签的内容自动进行字符转义'"></p>
+        <p>The message is : [[${umessage}]]</p>
+        <h3 th:text="'7.2 [(...)]'"></h3>
+        <p th:text="'[()]相当于th:utext，对含有 HTML 标签的内容不进行字符转义'"></p>
+        <p>The message is : [(${umessage})]</p>
+        <h3>7.3 th:inline</h3>
+        <p>暂不使用</p>
+    </div>
+</div>
+</body>
+</html>

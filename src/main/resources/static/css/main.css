@@ -1,0 +1,34 @@
+
+body {
+    background-color: #efefef;
+    margin: 0;
+}
+h1,h2,h3,h4,h5,h6 {
+    background-color: #eeeeee;
+}
+.container {
+    background-color: white;
+    width: 996px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+.red {
+    color: red;
+}
+
+.blue {
+    color: blue;
+}
+
+.grey-bg {
+    background-color: gray;
+}
